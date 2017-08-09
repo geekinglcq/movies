@@ -42,7 +42,7 @@ def extract_info():
         data = json.load(f)
     for i in data.keys():
         print(data[i]['Name'])
-        time.sleep(2)
+        time.sleep(15)
         advanced_info = get_douban_related_movie_info(data[i]["Name"], data[i]["Year"])
         if advanced_info != None:
             data[i].update(advanced_info)
