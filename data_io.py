@@ -15,16 +15,12 @@ def lines_per_n(f, n):
 def read_multi_json(file):
     data = []
     i = 0
-    print(i)
     temp = []
     for line in codecs.open(file, encoding='utf-8'):
         if line == '}\n':
             
             temp.append(line)
-            # print(''.join(temp))
             sample = json.loads(''.join(temp))
-            # print(sample)
-            print(i)
             i += 1
             temp = []
             data.append(sample)
