@@ -29,7 +29,7 @@ def get_douban_related_movie_info(name, year):
     respone = requests.get(search_url)
     if respone.ok:
         info = json.loads(respone.text)
-        if info['total'] > 0:
+        if len(info['subjects']) > 0:
             info = info["subjects"][0]
             return info
         else:
