@@ -3,6 +3,7 @@
 
 
 import os
+import re
 import json
 import codecs
 import pandas as pd
@@ -27,38 +28,38 @@ comments_after_clean = './data/fine_comment.csv'
 html_file = './output/影片质量-评论分析.html'
 
 
-# 读取电影基本数据，将其按照豆瓣评分分类，大于7.5分的归类为**好片**，低于5分的归为**烂片**。
+# # 读取电影基本数据，将其按照豆瓣评分分类，大于7.5分的归类为**好片**，低于5分的归为**烂片**。
 
 
-movie_info = pd.read_csv(movie_info_path)
-good = set()
-bad = set()
-for i, r in movie_info.iterrows():
-    if r['score.douban'] >= 7.5:
-        good.add(r['name'])
-    if r['score.douban'] <= 5:
-        bad.add(r['name'])
-print(good, bad)
+# movie_info = pd.read_csv(movie_info_path)
+# good = set()
+# bad = set()
+# for i, r in movie_info.iterrows():
+#     if r['score.douban'] >= 7.5:
+#         good.add(r['name'])
+#     if r['score.douban'] <= 5:
+#         bad.add(r['name'])
+# print(good, bad)
 
 
-# 下面我们将原始评论数据读入，筛出对上面好片和烂片的评论并提取它们的作者，文本内容和情感分数信息。
-# 缺失的评论数据用‘’补全，
-# 处理完成的数据存到本地。
+# # 下面我们将原始评论数据读入，筛出对上面好片和烂片的评论并提取它们的作者，文本内容和情感分数信息。
+# # 缺失的评论数据用‘’补全，
+# # 处理完成的数据存到本地。
 
 
-comments = di.read_multi_json(raw_comment_path)
-comments_dataframe = pd.DataFrame(columns=['Cate', 'Auther', 'Text','Score'])
-for i in range(len(comments)):
-    m_name = comments[i]['movieName']
-    if m_name in good:
-        cate = 'good'
-    elif m_name in bad:
-        cate = 'bad'
-    else:
-        continue
-    comments_dataframe.loc[i] = [cate, comments[i]['user'].get('displayName', ''), comments[i].get('content', ''), comments[i]['score'] ]
-comments_dataframe['text'].fillna('', inplace=True)
-comments_dataframe.to_csv('./data/comments_dataframe.csv', index=False)
+# comments = di.read_multi_json(raw_comment_path)
+# comments_dataframe = pd.DataFrame(columns=['Cate', 'Auther', 'Text','Score'])
+# for i in range(len(comments)):
+#     m_name = comments[i]['movieName']
+#     if m_name in good:
+#         cate = 'good'
+#     elif m_name in bad:
+#         cate = 'bad'
+#     else:
+#         continue
+#     comments_dataframe.loc[i] = [cate, comments[i]['user'].get('displayName', ''), comments[i].get('content', ''), comments[i]['score'] ]
+# comments_dataframe['Text'].fillna('', inplace=True)
+# comments_dataframe.to_csv(comments_dataframe_path, index=False)
 
 
 
@@ -72,11 +73,16 @@ def remove_stop_words(text):
     尚雯婕 鲍春来 孙建弘 刘亦菲 杨洋 罗晋 刘德华 姜武 宋佳 刘烨 朱亚文 黄志忠 王景春 欧豪 \
     黄渤 段奕宏 徐静蕾 张震 张译 王凯 张鲁一 林心如 张智霖 梅婷 钟欣潼 金城武 周冬雨 孙艺洲 \
     霍建华 金士杰 余文乐 杨千嬅 蒋梦婕 夜华 冷锋 魏忠贤 信王'.split(' ')
-    for i in stop_words:
-        text = text.replace(i, ' ')
+    stop_words = re.compile(r'|'.join(stop_words))
+    text = stop_words.sub(' ', text)
     return text
-
-comments_dataframe['Text'] = comments_dataframe.apply(lambda row: remove_stop_words(row['Text']), axis=1)
+comments_dataframe = pd.read_csv(comments_dataframe_path)
+print("hello")
+# comments_dataframe['Text'] = comments_dataframe.apply(lambda row: remove_stop_words(row['Text']), axis=1)
+for i, r in comments_dataframe.iterrows():
+    text = remove_stop_words(r['Text'])
+    comments_dataframe.set_value(i, 'Text', text)
+print('here')
 comments_dataframe['Text'] = comments_dataframe['Text'].apply(chinese_nlp)
     
 

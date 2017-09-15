@@ -36,7 +36,13 @@ def get_douban_related_movie_info(name, year):
             return None
     else:
         return None
-
+def get_douban_score(name, year):
+    try:
+        info = get_douban_related_movie_info(name, year)
+        score = info.get('rating').get('average')
+        return score
+    except Exception as e:
+        return -1
 def extract_info():
     with open('movie_basic_info.json') as f:
         data = json.load(f)
