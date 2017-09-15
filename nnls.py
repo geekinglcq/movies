@@ -9,30 +9,6 @@ class NNLS(base.LinearModel):
     def __init__(self, fit_intercept=True, normalize=False, copy_X=True):
         """
         Non negative least squares
-        Parameters
-        ----------
-        fit_intercept : bool, optional, default : True
-            whether to calculate the intercept for this model. If set
-            to false, no intercept will be used in calculations
-            (e.g. data is expected to be already centered).
-        normalize : boolean, optional, default False
-            If True, the regressors X will be normalized before regression.
-            This parameter is ignored when `fit_intercept` is set to False.
-            When the regressors are normalized, note that this makes the
-            hyperparameters learnt more robust and almost independent of the
-            number of samples. The same property is not valid for standardized
-            data. However, if you wish to standardize, please use
-            `preprocessing.StandardScaler` before calling `fit` on an
-            estimator with `normalize=False`.
-        copy_X : boolean, optional, default True
-            If True, X will be copied; else, it may be overwritten.
-        Attributes
-        ----------
-        coef_ : array, shape (n_features, )
-            Estimated coefficients for the linear regression problem.
-        residues_ : array,  (1,) or empty
-            Sum of residuals. Squared Euclidean 2-norm for each target passed
-            during the fit.
         """
         self.fit_intercept = fit_intercept
         self.normalize = normalize

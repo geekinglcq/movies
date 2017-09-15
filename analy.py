@@ -15,7 +15,13 @@ from sklearn.datasets import load_svmlight_file
 basic_info_path = './data/2017_basic_info.csv'  
 comments_path = './data/comments.json'
 training_path = './data/features.libsvm.txt'
+movie_comments_handled = './data/movie_comments_handled.json'
+box_office_path = './data/box_office.json'
+def get_movie_comments_handled():
+    return json.load(codecs.open(movie_comments_handled,'r','utf-8'))
 
+def get_box_office():
+    return json.load(codecs.open(box_office_path,'r','utf-8'))
 def extend_info(info_path=basic_info_path):
     """
     Add casts info to raw dataFrame
@@ -82,7 +88,6 @@ def train(data_path=training_path):
     X = X.toarray()
     reg = NNLS()
     reg.fit(X, y)
-    print(reg.coef_, reg.intercept_)
     return (reg.coef_, reg.intercept_)
 
 def estimate_actor_influence(movie_comments, coef, intercept, movie_box):
